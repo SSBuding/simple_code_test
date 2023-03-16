@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+
+  <body>
+    <script>
+      function foo(a, b, c) {
+        console.log(a + b + c)
+      }
+
+      function currify(fn) {
+        function currentfn(...args) {
+          if (args.length >= fn.length) {
+            fn(...args)
+          } else {
+            return function (...newArgs) {
+              return currentfn(...args.concat(newArgs))
+            }
+          }
+        }
+        return currentfn
+      }
+
+      const fooCurrify = currify(foo)
+      fooCurrify(1)(2)(3)
+      debugger
+    </script>
+  </body>
+</html>
