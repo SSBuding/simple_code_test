@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      .clock {
+        width: 300px;
+        height: 300px;
+        margin: 10px;
+        background-color: black;
+        border-radius: 50px;
+      }
+      canvas {
+        background-color: rgba(255, 0, 0, 0.1);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="clock">
+      <canvas id="tutorial" width="300" height="300"></canvas>
+    </div>
+    <script>
+      window.onload = function () {
+        const canvasEl = document.getElementById('tutorial')
+        if (!canvasEl.getContext) {
+          return
+        }
+        const ctx = canvasEl.getContext('2d')
+        // 浏览器下一次重绘之前执行
+        requestAnimationFrame(draw)
+        function draw() {
+          ctx.clearRect(0, 0, 300, 300)
+          ctx.save()
+
+          drawbg()
+          drawdigit()
+          drawhourhand()
+          drawminutehand()
+          drawsecondhand()
+          drawcenter()
+          drawscale()
+
+          ctx.restore()
+          requestAnimationFrame(draw)
+        }
+        // 绘制背景
+        function drawbg() {
+          ctx.save()
+          ctx.translate(150, 150)
+          ctx.fillStyle = 'white'
+          ctx.beginPath()
+          ctx.arc(0, 0, 130, 0, Math.PI * 2)
+          ctx.fill()
+          ctx.restore()
+        }
+        // 绘制数字
+        function drawdigit() {
+          ctx.save()
+
+          ctx.translate(150, 150)
+          // 绘制参考线
+          // ctx.beginPath()
+          // ctx.moveTo(0, 0)
+          // ctx.lineTo(130, 0)
+          // ctx.stroke()
+          // 数字部分
+          let numbers = [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 1, 2]
+          ctx.font = '30px fangsong'
+          ctx.textBaseline = 'middle'
+          ctx.textAlign = 'center'
+          for (let i = 0; i < numbers.length; i++) {
+            let x = Math.cos((Math.PI / 6) * i) * 100
+            let y = Math.sin((Math.PI / 6) * i) * 100
+            ctx.fillText(numbers[i], x, y)
+          }
+
+          ctx.restore()
+        }
+        //绘制时针
+        function drawhourhand() {
+          ctx.save()
+          let time = new Date()
+          let hours = time.getHours()
+          let minutes = time.getMinutes()
+          let second = time.getSeconds()
+          ctx.translate(150, 150)
+          ctx.rotate(
+            ((Math.PI * 2) / 12) * hours +
+              ((Math.PI * 2) / 12 / 60) * minutes +
+              ((Math.PI * 2) / 12 / 60 / 60) * second
+          )
+
+          ctx.lineWidth = 5
+          ctx.lineCap = 'round'
+          ctx.beginPath()
+          ctx.moveTo(0, 0)
+          ctx.lineTo(0, -50)
+          ctx.stroke()
+          ctx.restore()
+        }
+        // 绘制分针
+        function drawminutehand() {
+          ctx.save()
+          let time = new Date()
+          let minutes = time.getMinutes()
+          let second = time.getSeconds()
+          ctx.translate(150, 150)
+          ctx.rotate(((Math.PI * 2) / 60) * minutes + ((Math.PI * 2) / 60 / 60) * second)
+
+          ctx.lineWidth = 3
+          ctx.lineCap = 'round'
+          ctx.beginPath()
+          ctx.moveTo(0, 0)
+          ctx.lineTo(0, -70)
+          ctx.stroke()
+          ctx.restore()
+        }
+        // 绘制秒针
+        function drawsecondhand() {
+          ctx.save()
+          let time = new Date()
+
+          let second = time.getSeconds()
+          ctx.translate(150, 150)
+          ctx.rotate(((Math.PI * 2) / 60) * second)
+
+          ctx.lineWidth = 2
+          ctx.strokeStyle = 'red'
+          ctx.lineCap = 'round'
+          ctx.beginPath()
+          ctx.moveTo(0, 0)
+          ctx.lineTo(0, -80)
+          ctx.stroke()
+          ctx.restore()
+        }
+        // 绘制圆心
+        function drawcenter() {
+          ctx.save()
+          ctx.translate(150, 150)
+          ctx.beginPath()
+          ctx.arc(0, 0, 8, 0, Math.PI * 2)
+          ctx.fill()
+
+          ctx.fillStyle = 'gray'
+          ctx.beginPath()
+          ctx.arc(0, 0, 5, 0, Math.PI * 2)
+          ctx.fill()
+          ctx.restore()
+        }
+        // 绘制刻度
+        function drawscale() {
+          ctx.save()
+          ctx.translate(150, 150)
+          // 时针刻度
+          ctx.save()
+          for (let i = 0; i < 12; i++) {
+            ctx.rotate((Math.PI * 2) / 12)
+            ctx.lineWidth = 3
+            ctx.beginPath()
+            ctx.moveTo(0, -130)
+            ctx.lineTo(0, -122)
+            ctx.stroke()
+          }
+          ctx.restore()
+          // 分针刻度
+          ctx.save()
+          for (let i = 0; i < 60; i++) {
+            ctx.rotate((Math.PI * 2) / 60)
+            ctx.lineWidth = 1
+            ctx.beginPath()
+            ctx.moveTo(0, -130)
+            ctx.lineTo(0, -125)
+            ctx.stroke()
+          }
+          ctx.restore()
+
+          ctx.restore()
+        }
+      }
+    </script>
+  </body>
+</html>
