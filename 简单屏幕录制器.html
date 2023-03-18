@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <button id="btn">开始</button>
+    <div>
+      <video id="video" style="width: 800px; height: 600px; background: black"></video>
+    </div>
+
+    <script>
+      let captureStream = null
+      let mediaRecorder = null
+
+      const btn = document.getElementById('btn')
+      const video = document.getElementById('video')
+
+      btn.addEventListener('click', () => {
+        if (captureStream == null) {
+          start()
+        } else {
+          captureStream.getTracks().forEach((element) => element.stop())
+        }
+      })
+
+      const start = async () => {
+        captureStream = await getCaptureStream()
+        mediaRecorder = getMediaRecorder(captureStream)
+        video.srcObject = captureStream // 预览屏幕捕获
+        video.onloadedmetadata = function () {
+          video.play()
+          mediaRecorder.start()
+          btn.innerHTML = '保存'
+        }
+      }
+      // 获取屏幕捕获流
+      const getCaptureStream = () => {
+        const options = {
+          video: {
+            cursor: 'always' //显示鼠标
+          },
+          audio: {
+            noiseSuppression: true,
+            sampleRate: 44100
+          }
+        }
+        return navigator.mediaDevices.getDisplayMedia(options)
+      }
+
+      const getMediaRecorder = (stream) => {
+        const recorder = new MediaRecorder(stream, { mimeType: 'video/webm' })
+        recorder.addEventListener('dataavailable', (e) => {
+          if (e.data.size <= 0) return
+          save(e.data)
+        })
+        return recorder
+      }
+      const save = (blob) => {
+        const a = document.createElement('a')
+        a.href = URL.createObjectURL(blob)
+        a.download = `recorder_&{new Date().toLocaleString()}.webm` //文件名
+        a.click()
+        video.srcObject = null
+        mediaRecorder = null
+        captureStream = null
+        btn.innerHTML = '开始'
+      }
+    </script>
+  </body>
+</html>
