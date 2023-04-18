@@ -1,0 +1,13 @@
+function main(array){
+	let i, k, temp;
+	for( i=0; i<array.length; i++ ) {
+		temp = array[array.length-1]; 
+		for( k=array.length; k>0; k-- ) {
+			a[k] = a[k-1];    		
+		}
+		a[0] = temp;           
+	}
+	for( i=0; i<10; i++ ){
+		console.log(i)
+	}
+}
