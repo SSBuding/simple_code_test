@@ -1,10 +1,9 @@
 // 定义接口
-interface IStack<T>{
+import type { IList } from "../types/IList"
+interface IStack<T> extends IList<T>{
   push(element:T):void
   pop():T |undefined
-  peek():T|undefined
-  isEmpty():boolean
-  size():number
+ 
 }
 
 // 封装一个栈 基于数组、链表
@@ -35,7 +34,7 @@ class ArrayStack<T> implements IStack<T> {
   }
 
   // 返回元素个数
-  size(): number {
+  get size(): number {
     return this.data.length
   }
 }
@@ -53,7 +52,7 @@ class LinkedStack<T> implements IStack<T>{
   isEmpty(): boolean {
     throw new Error("Method not implemented.")
   }
-  size(): number {
+  get size(): number {
     throw new Error("Method not implemented.")
   }
 
